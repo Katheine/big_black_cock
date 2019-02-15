@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "84532905769",
+    "firebase_url": "https://succ-or-cactus.firebaseio.com",
+    "project_id": "succ-or-cactus",
+    "storage_bucket": "succ-or-cactus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84532905769:android:08c72b813b5953b1",
+        "android_client_info": {
+          "package_name": "com.example.succ"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84532905769-rkv3qdut35j07f165tas8vhn1bmrp48g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfF_WzR9RWAszE6tJe3pIzwTAkXvfMTQQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
