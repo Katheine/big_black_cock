@@ -17,7 +17,7 @@ class AuthPageState extends State<AuthPage> {
 
   googleSignIn() async {
     GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: ['email',],
+      scopes: ['email'],
     );
     final googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -28,6 +28,9 @@ class AuthPageState extends State<AuthPage> {
     );
 
     final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential);
+    if (user != null) {
+      Navigator.of(context).pushReplacementNamed("/profile");
+    }
   }
 
   @override
@@ -46,17 +49,29 @@ class AuthPageState extends State<AuthPage> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.googlePlusG),
+                  icon: Icon(
+                      FontAwesomeIcons.googlePlusG,
+                      size: 80,
+                  ),
+                  iconSize: 80,
                   onPressed: googleSignIn,
                 ),
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.twitter),
+                  icon: Icon(
+                    FontAwesomeIcons.twitter,
+                    size: 80,
+                  ),
+                  iconSize: 80,
                   onPressed: (){},
                 ),
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.facebookF),
+                  icon: Icon(
+                      FontAwesomeIcons.facebookF,
+                    size: 80,
+                  ),
+                  iconSize: 80,
                   onPressed: (){},
-                )
+                ),
               ]
             )
           ],

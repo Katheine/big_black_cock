@@ -31,6 +31,8 @@ class DetailsState extends State<DetailsPage> {
     final currUser = await FirebaseAuth.instance.currentUser();
     if (currUser == null) {
       Navigator.of(context).pushReplacementNamed('/auth');
+    } else {
+      Navigator.of(context).pushReplacementNamed("/profile");
     }
   }
 

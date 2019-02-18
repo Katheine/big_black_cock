@@ -4,9 +4,10 @@ import 'package:succ/auth_page.dart';
 import 'package:succ/plant_page.dart';
 import 'package:succ/poliv_page.dart';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:succ/profile_page.dart';
 
 void main() async {
-  await AndroidAlarmManager.initialize();
+  //await AndroidAlarmManager.initialize();
   runApp(MyApp());
 }
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/auth': (_) => AuthPage(),
         '/poliv': (_) => PolivPage(),
-        //'/profile': (_) => new ProfilePage(),
+        '/profile': (_) => ProfilePage(),
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.red,
+        brightness: Brightness.dark
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -57,18 +59,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
