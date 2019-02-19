@@ -2,6 +2,7 @@
 
 import 'dart:math' as math;
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 
@@ -43,6 +44,16 @@ class PolivPageState extends State<PolivPage> {
       this.angle = -angle;
     });
   }
+
+  openProfilePage() async {
+    final currUser = await FirebaseAuth.instance.currentUser();
+    if (currUser == null) {
+      Navigator.of(context).pushReplacementNamed('/auth');
+    } else {
+      Navigator.of(context).pushReplacementNamed("/profile");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,12 +108,12 @@ class PolivPageState extends State<PolivPage> {
             Row(children: <Widget>[
               IconButton(
                   icon: Icon(Icons.arrow_back),
-                  onPressed: (){}
+                  onPressed: (){ Navigator.of(context).pop(); },
               ),
               Spacer(),
               IconButton(
                   icon: Icon(Icons.menu),
-                  onPressed: (){}
+                  onPressed: openProfilePage()
               ),
             ],),
             Spacer(),

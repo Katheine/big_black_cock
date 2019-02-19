@@ -60,6 +60,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  openProfilePage() async {
+    final currUser = await FirebaseAuth.instance.currentUser();
+    if (currUser == null) {
+      Navigator.of(context).pushReplacementNamed('/auth');
+    } else {
+      Navigator.of(context).pushReplacementNamed("/profile");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -94,9 +103,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             IconButton(
               icon: Icon(Icons.menu),
-              onPressed: (){
-                Navigator.of(context).pushReplacementNamed('/poliv');
-              }
+              onPressed: openProfilePage
+                //Navigator.of(context).pushReplacementNamed('/poliv');
+
             )
           ],
         ),

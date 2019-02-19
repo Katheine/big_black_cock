@@ -61,7 +61,7 @@ class PlantPageState extends State<PlantPage> {
                             children: <Widget>[
                               Expanded(
                                 child: FutureBuilder<Image>(
-                                  future: futuresImages[num+1],
+                                  future: futuresImages[num],
                                   builder: (_, ass) =>
                                   ass.data ?? CircularProgressIndicator(),
                                 ),
@@ -72,7 +72,7 @@ class PlantPageState extends State<PlantPage> {
                                   children: <Widget>[
                                     Center(
                                         child: FutureBuilder<String>(
-                                          future: futuresTexts[num+1],
+                                          future: futuresTexts[num],
                                           builder: (_, ass) =>
                                           Text(ass.data) ?? CircularProgressIndicator(),
                                         ),
