@@ -43,11 +43,15 @@ class PlantPageState extends State<PlantPage> {
                     "Succulentu",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepOrange,
+                        color: Colors.white,
                         fontSize: 27
                     ),
                   ),
-                  Text("a tut text"),
+                  Text(
+                    "Суккуленты — растения, имеющие специальные ткани для запаса воды.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14) ,
+                  ),
                   Expanded(
                     child: PageView.builder(
                         controller: pageController,
@@ -81,20 +85,28 @@ class PlantPageState extends State<PlantPage> {
                         }
                     ),
                   ),
-                  RaisedButton(
-                    child: Text(
-                      "Uznat bolshe",
-                      style: TextStyle(
-                          color: const Color(0xFFFFFFFF)
-                      ),
-                    ),
-                    color: Colors.teal,
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                        final num = pageController.page.toInt();
-                        return DetailsPage(num + 1 , 'succ');
-                      }));
-                    },
+                  ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [Color(0xFFBCD5C1),Color(0xFF5D9D67)]),
+                          ),
+                        child:FlatButton(
+                          child: Text(
+                            " Узнать больше ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                              final num = pageController.page.toInt();
+                              return DetailsPage(num + 1 , 'succ');
+                            }));
+                          },
+                        )
+                    )
                   )
                 ],
               ),
