@@ -24,7 +24,7 @@ class PlantPageState extends State<PlantPage> {
   @override
   void initState() {
     super.initState();
-    for (var i = 1; i <= SUCC_COUNT; i++) {
+    for (var i = 0; i < SUCC_COUNT; i++) {
       futuresImages[i] = loadPic(i);
       futuresTexts[i] = loadText(i);
     }
@@ -102,7 +102,7 @@ class PlantPageState extends State<PlantPage> {
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                               final num = pageController.page.toInt();
-                              return DetailsPage(num + 1 , 'succ');
+                              return DetailsPage(num , 'succ');
                             }));
                           },
                         )

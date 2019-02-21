@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:succ/auth_page.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: {
         '/auth': (_) => AuthPage(),
-        '/poliv': (_) => PolivPage(),
+        '/polive': (_) => PolivPage(),
         '/profile': (_) => ProfilePage(),
       },
       theme: ThemeData(
@@ -60,14 +61,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  openProfilePage() async {
-    final currUser = await FirebaseAuth.instance.currentUser();
-    if (currUser == null) {
-      Navigator.of(context).pushReplacementNamed('/auth');
-    } else {
-      Navigator.of(context).pushReplacementNamed("/profile");
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   IconButton(
                     icon: Icon(FontAwesomeIcons.adjust),
-                    onPressed: (){},
+                    onPressed: (){{Navigator.of(context).pushReplacementNamed('/polive');}},
                   ),
                   Spacer(),
                 ]
@@ -103,9 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             IconButton(
               icon: Icon(Icons.menu),
-              onPressed: openProfilePage
-                //Navigator.of(context).pushReplacementNamed('/poliv');
-
+              onPressed: () {Navigator.of(context).pushReplacementNamed('/polive');}
             )
           ],
         ),

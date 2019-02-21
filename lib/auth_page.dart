@@ -37,47 +37,58 @@ class AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) => Scaffold(
     body: Stack(
       children:[
-        Positioned(
-          left: 0,
-          bottom: 0,
-          right: 0,
-          child: Container(),
-        ),
+
         Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Row(
-              children: [
+              children:[
                 IconButton(
-                  icon: Icon(
+                    icon: Icon(Icons.arrow_back, color: Colors.white,),
+                    onPressed: (){ Navigator.of(context).pop(); }
+                )
+              ],
+            ),
+            Container(
+              height: 250,
+              width: 250,
+            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(
                       FontAwesomeIcons.googlePlusG,
                       size: 80,
+                    ),
+                    iconSize: 80,
+                    onPressed: googleSignIn,
                   ),
-                  iconSize: 80,
-                  onPressed: googleSignIn,
-                ),
-                IconButton(
-                  icon: Icon(
-                    FontAwesomeIcons.twitter,
-                    size: 80,
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.twitter,
+                      size: 80,
+                    ),
+                    iconSize: 80,
+                    onPressed: (){},
                   ),
-                  iconSize: 80,
-                  onPressed: (){},
-                ),
-                IconButton(
-                  icon: Icon(
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(
                       FontAwesomeIcons.facebookF,
-                    size: 80,
+                      size: 80,
+                    ),
+                    iconSize: 80,
+                    onPressed: (){},
                   ),
-                  iconSize: 80,
-                  onPressed: (){},
-                ),
-              ]
+                  Spacer()
+                ]
             )
+
           ],
         )
       ]
     ),
   );
-
 }
