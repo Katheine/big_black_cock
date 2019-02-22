@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:succ/auth_page.dart';
@@ -63,9 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
   openProfilePage() async {
     final currUser = await FirebaseAuth.instance.currentUser();
     if (currUser == null) {
-      Navigator.of(context).pushReplacementNamed('/auth');
+      Navigator.of(context).pushNamed('/auth');
     } else {
-      Navigator.of(context).pushReplacementNamed("/profile");
+      Navigator.of(context).pushNamed("/profile");
     }
   }
 
@@ -95,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   IconButton(
                     icon: Icon(FontAwesomeIcons.adjust),
-                    onPressed: (){},
+                    onPressed: () => Navigator.of(context).pushNamed('/poliv'),
                   ),
                   Spacer(),
                 ]
@@ -103,9 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             IconButton(
               icon: Icon(Icons.menu),
-              onPressed: openProfilePage
-                //Navigator.of(context).pushReplacementNamed('/poliv');
-
+//              onPressed: openProfilePage
+              onPressed: () => Navigator.of(context).pushNamed('/poliv'),
             )
           ],
         ),

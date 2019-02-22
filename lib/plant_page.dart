@@ -24,8 +24,8 @@ class PlantPageState extends State<PlantPage> {
   @override
   void initState() {
     super.initState();
-    for (var i = 1; i <= SUCC_COUNT; i++) {
-      futuresImages[i] = loadPic(i);
+    for (var i = 0; i <= SUCC_COUNT; i++) {
+      futuresImages[i] = loadPic(i+1);
       futuresTexts[i] = loadText(i);
     }
   }
@@ -99,10 +99,12 @@ class PlantPageState extends State<PlantPage> {
                               color: Colors.white
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            final num = pageController.page.toInt();
+                            final txt = await futuresTexts[num];
+                            final name = txt.split(" ")[0]; // ы
                             Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                              final num = pageController.page.toInt();
-                              return DetailsPage(num + 1 , 'succ');
+                              return DetailsPage(num, name);
                             }));
                           },
                         )

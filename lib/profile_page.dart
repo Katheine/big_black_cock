@@ -126,7 +126,17 @@ class ProfilePageState extends State<ProfilePage> {
                 )
               ],
             ),
-          )
+          ),
+
+          Positioned(
+            top: 50,
+            left: 20,
+            child: IconButton(
+              iconSize: 20,
+              icon: Icon(Icons.arrow_back),
+              onPressed: Navigator.of(context).pop,
+            ),
+          ),
         ],
       ),
     );
