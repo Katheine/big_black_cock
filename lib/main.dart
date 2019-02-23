@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: {
         '/auth': (_) => AuthPage(),
-        '/polive': (_) => PolivPage(),
+        '/poliv': (_) => PolivPage(),
         '/profile': (_) => ProfilePage(),
       },
       theme: ThemeData(
@@ -61,7 +61,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-
+  openProfilePage() async {
+    final currUser = await FirebaseAuth.instance.currentUser();
+    if (currUser == null) {
+      Navigator.of(context).pushNamed('/auth');
+    } else {
+      Navigator.of(context).pushNamed("/profile");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   IconButton(
                     icon: Icon(FontAwesomeIcons.adjust),
-                    onPressed: (){{Navigator.of(context).pushReplacementNamed('/polive');}},
+                    onPressed: () => Navigator.of(context).pushNamed('/poliv'),
                   ),
                   Spacer(),
                 ]
@@ -97,7 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             IconButton(
               icon: Icon(Icons.menu),
-              onPressed: () {Navigator.of(context).pushReplacementNamed('/polive');}
+//              onPressed: openProfilePage
+              onPressed: () => Navigator.of(context).pushNamed('/poliv'),
             )
           ],
         ),

@@ -16,10 +16,22 @@ class PolivPage extends StatefulWidget {
 class PolivPageState extends State<PolivPage> {
   var angle = .0;
   int get day {
-    int res = (angle * 32 / (2 * math.pi)).round() + 1;
-    return res < 0 ? res + 32 : res;
+    int res = (angle * 31 / (2 * math.pi)).round();
+    return res < 0 ? res + 31 : res;
   }
   final krugKey = GlobalKey();
+  final random = math.Random();
+  int dayPoliv;
+  int dayPeresadka;
+
+  @override
+  initState() {
+    super.initState();
+    dayPoliv = random.nextInt(31);
+    do {
+      dayPeresadka = random.nextInt(31);
+    } while((dayPoliv - dayPeresadka).abs() < 5);
+  }
 
   onTapDown(TapDownDetails tdd) {
     handleDpadEvent(tdd.globalPosition);
@@ -54,7 +66,6 @@ class PolivPageState extends State<PolivPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     var stackChildren = <Widget>[];
@@ -73,89 +84,136 @@ class PolivPageState extends State<PolivPage> {
       ),
     ));
     stackChildren.add(
+      Text(
+        "День ${DateTime.now().day}",
+        style: TextStyle(fontSize: 30, color: const Color(0xFF415e30)),
+      )
+    );
+    for (var i = dayPoliv; i < dayPoliv + 5; i++) {
+      stackChildren.add(
         Transform.rotate(
-            angle: this.angle,
+          angle: i * math.pi * 2 / 31,
+          child: Container(
+            width: 320,
+            height: 320,
+            alignment: Alignment.topCenter,
             child: Container(
-                width: 250,
-                height: 250,
-                alignment: Alignment.topCenter,
-                child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle
-                    ),
-                    child: Center(
-                      child: Transform.rotate(
-                        angle: -this.angle,
-                        child: Text(
-                          day.toString(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18
-                          ),
-                        ),
-                      ),
-                    )
-                )
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.5),
+                shape: BoxShape.circle
+              ),
             )
+          )
         )
+      );
+    }
+    for (var i = dayPeresadka; i < dayPeresadka + 3; i++) {
+      stackChildren.add(
+        Transform.rotate(
+          angle: i * math.pi * 2 / 31,
+          child: Container(
+            width: 320,
+            height: 320,
+            alignment: Alignment.topCenter,
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.5),
+                  shape: BoxShape.circle
+              ),
+            )
+          )
+        )
+      );
+    }
+    stackChildren.add(
+      Transform.rotate(
+        angle: this.angle,
+        child: Container(
+          width: 320,
+          height: 320,
+          alignment: Alignment.topCenter,
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.7),
+              shape: BoxShape.circle
+            ),
+            child: Center(
+              child: Transform.rotate(
+                angle: -this.angle,
+                child: Text((day+1).toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18
+                  ),
+                ),
+              ),
+            )
+          )
+        )
+      )
     );
     return Scaffold(
-        body: Column(
-          children: <Widget>[
-            Row(children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: (){ Navigator.of(context).pop(); },
-              ),
-              Spacer(),
-              IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: openProfilePage()
-              ),
-            ],),
+      body: SafeArea(child: Column(
+        children: <Widget>[
+          Row(children: <Widget>[
+            IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: (){ Navigator.of(context).pop(); },
+            ),
             Spacer(),
-            Container(
-              width: 250,
-              height: 250,
-              key: krugKey,
-              child: GestureDetector(
-                  behavior: HitTestBehavior.deferToChild,
-                  onTapDown: onTapDown,
-                  onTapUp: onTapUp,
-                  child: Stack(
-                      children: stackChildren
+            IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: openProfilePage,
+            ),
+          ],),
+          Spacer(),
+          Container(
+            width: 320,
+            height: 320,
+            key: krugKey,
+            child: GestureDetector(
+              behavior: HitTestBehavior.deferToChild,
+              onTapDown: onTapDown,
+              onTapUp: onTapUp,
+              child: Stack(
+                alignment: Alignment.center,
+                children: stackChildren
+              )
+            ),
+          ),
+          Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [Color(0xFFBABDDC),Color(0xFFFAE9E9)]),
+                  ),
+                  child: FlatButton(
+                    child: Text(
+                      "Установить напоминание",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onPressed:(){
+// Убейте меня
+      //пожлуставыфаджлаьфаывождтфлы
+                    }
                   )
-              ),
-            ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [Color(0xFFBABDDC),Color(0xFFFAE9E9)]),
-                        ),
-                        child: FlatButton(
-                            child: Text(
-                              "Установить напоминание",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            onPressed:(){
-
-                            }
-                        )
-                    )
                 )
-              ],
-            ),
-            Container(height:100)
-          ],
-        )
+              )
+            ],
+          ),
+          Container(height:100)
+        ],
+      ))
     );
   }
 }

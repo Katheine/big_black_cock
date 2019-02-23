@@ -3,8 +3,10 @@
 import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:succ/even_more_details.dart';
 
 class DetailsPage extends StatefulWidget {
   final int num;
@@ -24,24 +26,74 @@ class DetailsState extends State<DetailsPage> {
   final int num;
   final String type;
   Future<dynamic> urlImage;
+  Future<DataSnapshot> futureData;
 
   DetailsState(this.num, this.type);
 
   openProfilePage() async {
     final currUser = await FirebaseAuth.instance.currentUser();
     if (currUser == null) {
-      Navigator.of(context).pushReplacementNamed('/auth');
+      Navigator.of(context).pushNamed('/auth');
     } else {
-      Navigator.of(context).pushReplacementNamed("/profile");
+      Navigator.of(context).pushNamed("/profile");
     }
   }
 
   @override
   void initState() {
     super.initState();
-    var cactusRef = FirebaseStorage.instance.ref().child("/succ/$num.jpg");
+    var cactusRef = FirebaseStorage.instance.ref().child("/succ/${num+1}.jpg");
     print(num);
     urlImage = cactusRef.getDownloadURL();
+    futureData = FirebaseDatabase.instance.reference().child("succ_info/$num").once();
+  }
+
+  Widget buildData(BuildContext ctx, AsyncSnapshot<DataSnapshot> snap) {
+    if (snap.data == null)
+      return Stack(fit: StackFit.expand);
+    final desc = snap.data.value["info"];
+    final widgetsList = <Widget>[
+      Text(
+        type,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 30),
+      ),
+      Text(
+        desc,
+        textAlign: TextAlign.justify,
+      ),
+      Text(
+        "Разновидности:",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 30),
+      ),
+    ];
+    List podvidi = snap.data.value["subs"];
+    for (var i = 0; i < podvidi.length; i++) {
+      final element = podvidi[i];
+      widgetsList.add(
+        FlatButton(
+          onPressed: () {
+            final desc = element['desc'];
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+              return EvenMoreDetailsPage(null, desc);
+            }));
+          },
+          child: Row(
+            children: <Widget>[
+              Container(width: 35, height: 35, color: Colors.red),
+              Text(element['name']),
+              Spacer(),
+              Icon(Icons.chevron_right),
+            ],
+          )
+        )
+      );
+    }
+    return ListView(
+      padding: EdgeInsets.all(10),
+      children: widgetsList,
+    );
   }
 
   @override
@@ -82,7 +134,7 @@ class DetailsState extends State<DetailsPage> {
                           ),
                           Spacer(),
                           Text(
-                            "qwertgy",
+                            type,
                             style: TextStyle( color: Colors.white ),
                           ),
                           Spacer(),
@@ -99,28 +151,9 @@ class DetailsState extends State<DetailsPage> {
             ],
           ),
           Expanded(
-            child: ListView(
-              children: <Widget>[
-                Text("sw4edrftyuhiji"),
-                Text("Анакампсерос - многолетники, имеют формы трав или кустарников, обычно низкорослые. Относится представитель «возвращающих любовь» растений к известному семейству Портулаковые и являет собой миниатюрный суккулент.род Анакампсерос классифицируют на три подрода."),
-                Text("Разновидности:"),
-                InkWell(
-                  onTap: () {
-
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Text("sdaougsahufiuhsfliusad",
-                      style: TextStyle(fontSize: 30))
-                    ],
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-
-                  ],
-                )
-              ],
+            child: FutureBuilder(
+              future: futureData,
+              builder: buildData,
             )
           ),
         ],
