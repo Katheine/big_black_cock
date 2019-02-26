@@ -30,8 +30,9 @@ class EvenMoreDetailsState extends State<EvenMoreDetailsPage> {
     splitted.forEach((part) {
       var doljnoBitJirnim = false;
       switch(part) {
-        case "Вложность":
-        case "Хуюжность":
+        case "Влажность воздуха и полив":
+        case "Пересадка":
+        case "Удобренрие":
           doljnoBitJirnim = true;
       }
       spans.add(TextSpan(text: part, style: doljnoBitJirnim ? TextStyle(fontWeight: FontWeight.bold) : null));
@@ -85,7 +86,7 @@ class EvenMoreDetailsState extends State<EvenMoreDetailsPage> {
         Expanded(
           child: ListView(
             children: <Widget>[
-              Text(description),
+              makeSomethingJirnij(description),
               Text("Произрастает", style: TextStyle(fontWeight: FontWeight.bold)),
               SizedBox(
                 width: 300,

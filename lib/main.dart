@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: (){},
                   ),
                   IconButton(
-                    icon: Icon(FontAwesomeIcons.adjust),
+                    icon: Icon(FontAwesomeIcons.cannabis),
                     onPressed: () => Navigator.of(context).pushNamed('/poliv'),
                   ),
                   Spacer(),
