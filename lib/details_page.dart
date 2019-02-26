@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:succ/even_more_details.dart';
+import 'package:succ/mini_photo_future_list.dart';
 
 class DetailsPage extends StatefulWidget {
   final int num;
@@ -16,7 +15,6 @@ class DetailsPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return DetailsState(num, type);
   }
 
@@ -27,8 +25,12 @@ class DetailsState extends State<DetailsPage> {
   final String type;
   Future<dynamic> urlImage;
   Future<DataSnapshot> futureData;
+  MiniPhotoFutureList miniPhotoFutures;
+  var title = "";
 
-  DetailsState(this.num, this.type);
+  DetailsState(this.num, this.type) {
+    miniPhotoFutures = MiniPhotoFutureList(num, type);
+  }
 
   openProfilePage() async {
     final currUser = await FirebaseAuth.instance.currentUser();
@@ -42,19 +44,21 @@ class DetailsState extends State<DetailsPage> {
   @override
   void initState() {
     super.initState();
-    var cactusRef = FirebaseStorage.instance.ref().child("/succ/${num+1}.jpg");
+    var cactusRef = FirebaseStorage.instance.ref().child("/${type}_info/$num/info/$num.jpg");
     print(num);
     urlImage = cactusRef.getDownloadURL();
-    futureData = FirebaseDatabase.instance.reference().child("succ_info/$num").once();
+    futureData = FirebaseDatabase.instance.reference().child("${type}_info/$num").once();
   }
 
   Widget buildData(BuildContext ctx, AsyncSnapshot<DataSnapshot> snap) {
     if (snap.data == null)
       return Stack(fit: StackFit.expand);
     final desc = snap.data.value["info"];
+    final imechko = desc.split(" ")[0];
+    title = imechko;
     final widgetsList = <Widget>[
       Text(
-        type,
+        imechko,
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 30),
       ),
@@ -73,15 +77,23 @@ class DetailsState extends State<DetailsPage> {
       final element = podvidi[i];
       widgetsList.add(
         FlatButton(
-          onPressed: () {
+          onPressed: () async {
             final desc = element['desc'];
+            final name = element['name'];
+            final url = await miniPhotoFutures[i];
             Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-              return EvenMoreDetailsPage(null, desc);
+              return EvenMoreDetailsPage(name, url, desc);
             }));
           },
           child: Row(
             children: <Widget>[
-              Container(width: 35, height: 35, color: Colors.red),
+              FutureBuilder(
+                future: miniPhotoFutures[i],
+                builder: (ctx, snap) => snap.data != null ? CircleAvatar(
+                  radius: 35,
+                  backgroundImage: NetworkImage(snap.data)
+                ) : Container(height: 35, width: 35),
+              ),
               Text(element['name']),
               Spacer(),
               Icon(Icons.chevron_right),
@@ -130,11 +142,11 @@ class DetailsState extends State<DetailsPage> {
                         children: <Widget>[
                           IconButton(
                             icon: Icon(Icons.arrow_back),
-                            onPressed: ( ){ Navigator.of(context).pop(); },
+                            onPressed: () { Navigator.of(context).pop(); },
                           ),
                           Spacer(),
                           Text(
-                            type,
+                            title,
                             style: TextStyle( color: Colors.white ),
                           ),
                           Spacer(),

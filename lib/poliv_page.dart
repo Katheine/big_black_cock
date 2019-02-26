@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 
 class PolivPage extends StatefulWidget {
+  final String name;
+
+  PolivPage(this.name);
 
   @override
-  State<StatefulWidget> createState() => PolivPageState();
+  State<StatefulWidget> createState() => PolivPageState(name);
 
 }
 
@@ -23,6 +26,9 @@ class PolivPageState extends State<PolivPage> {
   final random = math.Random();
   int dayPoliv;
   int dayPeresadka;
+  final String name;
+
+  PolivPageState(this.name);
 
   @override
   initState() {
@@ -172,6 +178,8 @@ class PolivPageState extends State<PolivPage> {
                 onPressed: openProfilePage,
             ),
           ],),
+          Spacer(),
+          Text(name),
           Spacer(),
           Container(
             width: 320,

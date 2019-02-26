@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:succ/auth_page.dart';
-import 'package:succ/plant_page.dart';
+import 'package:succ/details_page.dart';
 import 'package:succ/poliv_page.dart';
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:succ/profile_page.dart';
 
 void main() async {
@@ -20,7 +21,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: {
         '/auth': (_) => AuthPage(),
-        '/poliv': (_) => PolivPage(),
         '/profile': (_) => ProfilePage(),
       },
       theme: ThemeData(
@@ -61,6 +61,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  var isSucc = true;
+  String get type => isSucc ? "succ" : "cactus";
+
+  @override
+  initState() {
+    super.initState();
+    newFutures();
+  }
+
   openProfilePage() async {
     final currUser = await FirebaseAuth.instance.currentUser();
     if (currUser == null) {
@@ -72,12 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -92,11 +95,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   Spacer(),
                   IconButton(
                     icon: Icon(FontAwesomeIcons.cannabis),
-                    onPressed: (){},
+                    color: isSucc ? Colors.green : Colors.white,
+                    onPressed: () {
+                      setState(() {
+                        newFutures();
+                        isSucc=true;
+                      } );
+                    },
                   ),
                   IconButton(
                     icon: Icon(FontAwesomeIcons.cannabis),
-                    onPressed: () => Navigator.of(context).pushNamed('/poliv'),
+                    color: isSucc ? Colors.white : Colors.green,
+                    onPressed: () {
+                      setState(() {
+                        newFutures();
+                        isSucc=false;
+                      } );
+                    },
                   ),
                   Spacer(),
                 ]
@@ -112,7 +127,120 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white.withOpacity(0.3),
       ),
         backgroundColor: Colors.transparent,
-      body: PlantPage()
+      body: getPage(context)
     );
+  }
+
+  newFutures() {
+    for (var i = 0; i <= SUCC_COUNT; i++) {
+      futuresImages[i] = loadPic(i);
+      futuresTexts[i] = loadText(i);
+    }
+  }
+
+  static var SUCC_COUNT = 5;
+  final futuresImages = List<Future<Image>>(10);
+  final futuresTexts = List<Future<String>>(10);
+  final pageController = PageController();
+
+  @override
+  Widget getPage(BuildContext context) =>
+      Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    isSucc ? "Succulentu" : "Хуяктусы",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 27
+                    ),
+                  ),
+                  Text(
+                    isSucc ? "Суккуленты — растения, имеющие специальные ткани для запаса воды." : "Хуяктусы",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14) ,
+                  ),
+                  Expanded(
+                    child: PageView.builder(
+                        controller: pageController,
+                        itemCount: SUCC_COUNT,
+                        itemBuilder: (_, num) {
+                          return Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: FutureBuilder<Image>(
+                                  future: futuresImages[num],
+                                  builder: (_, ass) =>
+                                  ass.data ?? CircularProgressIndicator(),
+                                ),
+                              ),
+                              Container(
+                                height: 100,
+                                child: ListView(
+                                  children: <Widget>[
+                                    Center(
+                                      child: FutureBuilder<String>(
+                                        future: futuresTexts[num],
+                                        builder: (_, ass) => Text(ass.data) ?? CircularProgressIndicator(),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                    ),
+                  ),
+                  ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [Color(0xFFBCD5C1),Color(0xFF5D9D67)]),
+                          ),
+                          child:FlatButton(
+                            child: Text(
+                              " Узнать больше ",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white
+                              ),
+                            ),
+                            onPressed: () async {
+                              final num = pageController.page.toInt();
+                              final txt = await futuresTexts[num];
+                              final name = txt.split(" ")[0]; // ы
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                                return DetailsPage(num, type);
+                              }));
+                            },
+                          )
+                      )
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Future<Image> loadPic(int num) async {
+    var cactusRef = FirebaseStorage.instance.ref().child("/$type/$num.jpg");
+    var downloadUrl = await cactusRef.getDownloadURL();
+    return Image.network(downloadUrl);
+  }
+
+  Future<String> loadText (int num) async {
+    var descriptionRef = FirebaseDatabase.instance.reference().child("$type/$num");
+    var snap = await descriptionRef.once();
+    print(snap.value);
+    var name = snap.value["name"];
+    var desc = snap.value["desc"];
+    return "$name \n $desc";
   }
 }

@@ -4,16 +4,18 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:succ/poliv_page.dart';
 
 class EvenMoreDetailsPage extends StatefulWidget {
   final String photoUrl;
   final String description;
+  final String name;
 
-  EvenMoreDetailsPage(this.photoUrl, this.description);
+  EvenMoreDetailsPage(this.name, this.photoUrl, this.description);
 
   @override
   State<StatefulWidget> createState() {
-    return EvenMoreDetailsState(photoUrl, description);
+    return EvenMoreDetailsState(name, photoUrl, description);
   }
 
 }
@@ -21,22 +23,27 @@ class EvenMoreDetailsPage extends StatefulWidget {
 class EvenMoreDetailsState extends State<EvenMoreDetailsPage> {
   final String photoUrl;
   final String description;
+  final String name;
+  var easterEggActivated = false;
+  var eeTouches = 0;
+  var lastTapTime = DateTime.now();
 
-  EvenMoreDetailsState(this.photoUrl, this.description);
+  EvenMoreDetailsState(this.name, this.photoUrl, this.description);
+
+  final regex = RegExp(r"(\n[^:,.]+:)"); //Don't touch. Magic
 
   RichText makeSomethingJirnij(String text) {
-    final splitted = text.split(" ");
     final spans = <TextSpan>[];
-    splitted.forEach((part) {
-      var doljnoBitJirnim = false;
-      switch(part) {
-        case "Влажность воздуха и полив":
-        case "Пересадка":
-        case "Удобренрие":
-          doljnoBitJirnim = true;
-      }
-      spans.add(TextSpan(text: part, style: doljnoBitJirnim ? TextStyle(fontWeight: FontWeight.bold) : null));
+    Iterable<Match> matches = regex.allMatches(text);
+    var j = 0;
+    matches.forEach((m) {
+      final partPre = text.substring(j, m.start);
+      final part = text.substring(m.start, m.end);
+      j = m.end;
+      spans.add(TextSpan(text: partPre));
+      spans.add(TextSpan(text: part, style: TextStyle(fontWeight: FontWeight.bold)));
     });
+    spans.add(TextSpan(text: text.substring(j)));
     return RichText(
       text: TextSpan(
         children: spans,
@@ -51,8 +58,22 @@ class EvenMoreDetailsState extends State<EvenMoreDetailsPage> {
       children: <Widget>[
         Stack(
           children: <Widget>[
-            Container(
-              child: Image.network(photoUrl ?? "https://pbs.twimg.com/media/Dz7QjApXgAAjHtZ.jpg"),
+            InkWell(
+              onTap: () {
+                if (DateTime.now().difference(lastTapTime) < Duration(milliseconds: 500)) {
+                  if (eeTouches++ == 5) {
+                    setState((){
+                      easterEggActivated = true;
+                    });
+                  }
+                } else {
+                  eeTouches = 0;
+                }
+                lastTapTime = DateTime.now();
+              },
+              child: Container(
+                child: Image.network(easterEggActivated ? "https://pbs.twimg.com/media/D0QJ1QBX4AE1lDe.jpg" : photoUrl),
+              ),
             ),
             Container(
               decoration: BoxDecoration(
@@ -73,7 +94,8 @@ class EvenMoreDetailsState extends State<EvenMoreDetailsPage> {
                         Spacer(),
                         IconButton(
                           icon: Icon(Icons.menu),
-                          onPressed: (){},
+                          onPressed: (){
+                          },
                         )
                       ],
                     ),
@@ -87,7 +109,14 @@ class EvenMoreDetailsState extends State<EvenMoreDetailsPage> {
           child: ListView(
             children: <Widget>[
               makeSomethingJirnij(description),
-              Text("Произрастает", style: TextStyle(fontWeight: FontWeight.bold)),
+              FlatButton(
+                child: Text("Установить напоминание"),
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                    return PolivPage(name);
+                  }));
+                },
+              ),
               SizedBox(
                 width: 300,
                 height: 300,
