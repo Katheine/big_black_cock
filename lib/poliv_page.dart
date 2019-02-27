@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:succ/notification_plugin.dart';
 
 class PolivPage extends StatefulWidget {
   final String name;
@@ -210,9 +211,13 @@ class PolivPageState extends State<PolivPage> {
                       "Установить напоминание",
                       style: TextStyle(fontSize: 18),
                     ),
-                    onPressed:(){
-// Убейте меня
-      //пожлуставыфаджлаьфаывождтфлы
+                    onPressed:() async {
+                      final result = await NotificationPlugin.setNotification(
+                          DateTime.now().add(Duration(seconds: 5)),
+                          name
+                      );
+                      if (result != null)
+                        print("❌❌❌❌❌❌❌ERROR $result❌❌❌❌❌❌❌❌");
                     }
                   )
                 )

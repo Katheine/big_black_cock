@@ -39,5 +39,9 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
                    android:value="AIzaSyBfF_WzR9RWAszE6tJe3pIzwTAkXvfMTQQ"/>
 
+        <receiver
+            android:name=".AlarmReceiver"
+            android:exported="true"/>
+
     </application>
 </manifest>
